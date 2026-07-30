@@ -58,7 +58,7 @@ const Services = () => {
 
       <div className="relative mx-auto max-w-7xl px-6 sm:px-8">
         <div className="mb-16 max-w-2xl sm:mb-20" data-aos="fade-out">
-          <h2 className="font-serif text-4xl font-bold leading-tight text-gray-900 sm:text-5xl">
+          <h2 className="font-mono text-4xl font-bold leading-tight text-gray-900 sm:text-5xl">
             Services
           </h2>
           <p className="mt-4 text-lg text-gray-600">
@@ -73,17 +73,10 @@ const Services = () => {
               </div>
 
               <div className="pl-6 pt-2" data-aos="fade-out">
-                <a
-                  href="#Contact"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#259141] transition-all duration-300 hover:translate-x-1 hover:text-[#1e7534]"
+                <a href="#Contact" className="inline-flex items-center gap-2 text-sm font-semibold text-[#259141] transition-all duration-300 hover:translate-x-1 hover:text-[#1e7534]"
                 >
                   Diskusikan proyek Anda
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
@@ -92,7 +85,6 @@ const Services = () => {
             </div>
           </div>
 
-          {/* Right Column: Project Cards Grid */}
           <div className="grid flex-1 grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-8">
             {projects.map((project, index) => (
               <ProjectCard key={project.title} {...project} data-aos="fade-left" data-aos-delay={index * 300}/>
