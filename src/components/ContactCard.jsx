@@ -237,7 +237,7 @@ export function ContactCard() {
                   key={index}
                   href={method.link}
                   className="block p-5 bg-[#2db34e5a] backdrop-blur-md rounded-2xl border border-black/[0.1] hover:bg-[#25914150] transition-all group"
-                  data-aos="fade-out" data-aos-delay={index * 300}
+                  data-aos="fade-out" data-aos-delay={index * 200}
                 >
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${method.gradient} border border-black/10 flex items-center justify-center shrink-0`}>

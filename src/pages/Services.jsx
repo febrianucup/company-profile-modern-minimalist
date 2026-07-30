@@ -35,7 +35,7 @@ const projects = [
 
 const Services = () => {
   return (
-    <section id="Service" className="relative w-full overflow-hidden bg-slate-50/50 py-20 sm:py-28">
+    <section id="Service" className="relative w-full bg-slate-50/50 py-20 sm:py-28">
       <div 
         className="pointer-events-none absolute inset-0 opacity-[0.03] [mask-image:radial-gradient(ellipse_at_center,white_20%,transparent_75%)]"
         style={{
@@ -87,7 +87,7 @@ const Services = () => {
 
           <div className="grid flex-1 grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-8">
             {projects.map((project, index) => (
-              <ProjectCard key={project.title} {...project} data-aos="fade-left" data-aos-delay={index * 300}/>
+              <ProjectCard key={project.title} {...project} data-aos="fade-left" data-aos-delay={index * 200}/>
             ))}
           </div>
 
