@@ -1,9 +1,12 @@
+import { ContactCard } from "../components/ContactCard"
+
 function Contact() {
   return (
-    <section style={{ padding: '40px' }}>
-      <h1>Hubungi Kami</h1>
-      <p>Email: info@perusahaananda.com</p>
-      <p>Telepon: (021) 1234-5678</p>
+    <section className="container mx-auto px-4 lg:px-12 relative w-full border-t border-gray-200/80 py-20 bg-white">
+      <div className="text-center" data-aos="fade-out">
+        <h1 className="font-mono text-[40px] font-semibold">Contact Us</h1>
+      </div>
+      <ContactCard/>
     </section>
   )
 }

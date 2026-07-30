@@ -7,15 +7,15 @@ function Home() {
     return (
         <header className="w-full bg-white">
             <div className="container mx-auto px-4 lg:px-8 py-16 text-center">
-                <div className="flex flex-col item-center justify-center gap-4">
-                    <p className="text-sm md:text-base font-semibold tracking-light text-gray-500">#1 Software House to Develop All Your Digital Needs</p>
-                    <h1 className="text-[80px] font-mono font-semibold tracking-wider leading-22">Welcome to <br /> <span className="font-bold text-[#259141]">{companyName}</span></h1>
-                    <p className="text-lg px-96">Bomber Software House adalah mitra pengembangan perangkat lunak yang berfokus pada efisiensi, performa, dan desain modern. Kami membantu bisnis dan startup mentransformasi ide menjadi aplikasi web serta sistem enterprise yang andal, aman, dan siap tumbuh bersamamu.</p>
+                <div className="flex flex-col item-center justify-center gap-4" data-aos="fade-out">
+                    <p className="text-sm md:text-base font-semibold tracking-light text-gray-500" >#1 Software House to Develop All Your Digital Needs</p>
+                    <h1 className="text-[80px] font-mono font-semibold tracking-wider leading-22" >Welcome to <br /> <span className="font-bold text-[#259141]">{companyName}</span></h1>
+                    <p className="text-lg px-96" >Bomber Software House adalah mitra pengembangan perangkat lunak yang berfokus pada efisiensi, performa, dan desain modern. Kami membantu bisnis dan startup mentransformasi ide menjadi aplikasi web serta sistem enterprise yang andal, aman, dan siap tumbuh bersamamu.</p>
                     <div className="flex items-center justify-center mt-8 gap-2">
-                        <Link className="px-6 py-4 bg-[#259141] text-white font-semibold rounded-md shadow hover:bg-[#1F7338] transition">
+                        <Link className="px-6 py-4 bg-[#259141] text-white font-semibold rounded-md shadow hover:bg-[#1F7338] transition" data-aos="slide-right" data-aos-delay="200">
                             Learn What Bomber Does
                         </Link>
-                        <Link className="px-6 py-4 bg-white text-[#2DB34F] border-2 font-semibold rounded-md shadow hover:bg-[#2DB34F40] hover:text-black transition">
+                        <Link className="px-6 py-4 bg-white text-[#2DB34F] border-2 font-semibold rounded-md shadow hover:bg-[#2DB34F40] hover:text-black transition" data-aos="slide-left" data-aos-delay="200">
                             Explore our products
                         </Link>
                     </div>
@@ -26,7 +26,7 @@ function Home() {
                     <img 
                         src={peoplePict}
                         alt="Hero Illustration" 
-                        className="w-full max-w-sm object-contain drop-shadow-xl"
+                        className="w-full max-w-sm object-contain drop-shadow-xl" data-aos="fade-in"
                     />
                 </div>
                 <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">

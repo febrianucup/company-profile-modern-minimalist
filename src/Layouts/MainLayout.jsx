@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar"
-import Footer from "../components/Footer"
+import { Footer } from "../components/Footer"
 import Home from "../pages/Home"
 import AboutUs from "../pages/About"
 import Service from "../pages/Services"
