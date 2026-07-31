@@ -30,7 +30,7 @@ const Navbar = () => {
         handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
-    
+
     useEffect(() => {
         if (isMobileMenuOpen) {
             document.body.style.overflow = 'hidden';
