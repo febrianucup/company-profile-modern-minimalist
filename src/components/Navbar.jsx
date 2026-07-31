@@ -92,7 +92,7 @@ const Navbar = () => {
 
             {/* Mobile Navigation Drawer / Menu Dropdown */}
             <div 
-                className={`lg:hidden absolute top-full inset-x-0 bg-white border-b border-gray-200 shadow-xl transition-all duration-300 ease-in-out overflow-hidden ${
+                className={`lg:hidden absolute top-full inset-x-0  bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-xl transition-all duration-300 ease-in-out overflow-hidden ${
                     isMobileMenuOpen ? "max-h-[400px] opacity-100 py-6" : "max-h-0 opacity-0 py-0"
                 }`}
             >
