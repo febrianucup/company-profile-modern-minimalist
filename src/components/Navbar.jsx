@@ -51,7 +51,7 @@ const Navbar = () => {
     };
 
     return (
-        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md transition-all duration-300 border-b border-gray-100">
+        <header className="fixed left-0 right-0 top-0 z-50 w-full bg-white/80 backdrop-blur-md transition-all duration-300 border-b border-gray-100">
             <div className="container mx-auto px-4 lg:px-8">
                 <div className="flex items-center justify-between h-20 w-full">
                     <div className="flex items-center gap-8">
@@ -92,7 +92,7 @@ const Navbar = () => {
 
             {/* Mobile Navigation Drawer / Menu Dropdown */}
             <div 
-                className={`lg:hidden fixed inset-x-0 top-[80px] bg-white border-b border-gray-200 shadow-xl transition-all duration-300 ease-in-out overflow-hidden ${
+                className={`lg:hidden absolute top-full inset-x-0 bg-white border-b border-gray-200 shadow-xl transition-all duration-300 ease-in-out overflow-hidden ${
                     isMobileMenuOpen ? "max-h-[400px] opacity-100 py-6" : "max-h-0 opacity-0 py-0"
                 }`}
             >

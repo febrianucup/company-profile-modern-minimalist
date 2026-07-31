@@ -14,7 +14,7 @@ function App() {
     })
   }, [])
   return (
-    <div className="bg-white min-h-screen text-black overflow-hidden w-full">
+    <div className="bg-white min-h-screen text-black">
       <BrowserRouter>
         <Routes>
             <Route path="/" element={<MainLayout/>}>

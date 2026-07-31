@@ -7,9 +7,9 @@ import Contact from "../pages/Contact"
 
 const MainLayout = () => {
     return(
-        <div className="min-h-screen flex flex-col bg-white">
+        <div className="min-h-screen flex flex-col bg-white w-full">
             <Navbar/>
-            <main className="flex-grow">
+            <main className="flex-grow overflow-x-hidden ">
                 <section id="Home">
                     <Home/>
                 </section>
