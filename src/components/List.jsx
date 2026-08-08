@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { motion } from "framer-motion";
 
 const timelineData = [
@@ -18,12 +17,12 @@ const timelineData = [
 
 export default function List() {
   return (
-    <section className="bg-background">
+    <section className="bg-slate-50">
       <div className="container mx-auto px-4">
 
         <div className="relative mx-auto max-w-3xl">
           {/* Subtle vertical line */}
-          <div className="absolute left-3.5 top-3 h-[calc(100%-2rem)] w-0.5 bg-border" />
+          <div className="absolute left-3.5 top-3 h-[calc(100%-2rem)] w-0.5 bg-slate-300" />
 
           {timelineData.map((entry, index) => (
             <motion.div
@@ -38,12 +37,12 @@ export default function List() {
               <div className="absolute left-2 top-5 h-3 w-3 rounded-full bg-[#259141] ring-2" />
 
               {/* Content */}
-              <h4 className="text-lg font-normal text-foreground">
+              <h4 className="text-lg font-normal text-slate-900">
                 {entry.title}
               </h4>
-              <div className="rounded-xl border bg-card text-card-foreground shadow-sm hover:shadow-md transition">
+              <div className="rounded-xl border bg-white text-slate-700 shadow-sm hover:shadow-md transition">
                 <div className="px-5 py-4">
-                    <p className="leading-relaxed text-muted-foreground">
+                    <p className="leading-relaxed text-slate-600">
                     {entry.content}
                     </p>
                 </div>

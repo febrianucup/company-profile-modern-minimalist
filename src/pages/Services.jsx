@@ -1,4 +1,6 @@
-import * as React from "react"
+import hero from "../assets/hero.png"
+import peoplePict from "../assets/peoplePict.png"
+import peoplePict2 from "../assets/peoplePict2.png"
 import { ProjectCard } from "../components/ProjectCard"
 import List from "../components/List"
 
@@ -7,29 +9,29 @@ const projects = [
     title: "E-Commerce Dashboard",
     description:
       "Platform analitik penjualan modern dengan fitur real-time tracking dan manajemen stok otomatis.",
-    imgSrc: "/images/projects/ecommerce-dashboard.png",
-    link: "#"
+    imgSrc: hero,
+    link: "#Contact"
   },
   {
     title: "Aplikasi Mobile",
     description:
       "Aplikasi Kesehatan Mental: platform interaktif untuk melacak suasana hati.",
-    imgSrc: "/images/projects/mental-health-app.png",
-    link: "#"
+    imgSrc: peoplePict,
+    link: "#Contact"
   },
   {
     title: "Website Perusahaan",
     description:
       "Website Arsitektur Modern: portofolio online untuk biro arsitek.",
-    imgSrc: "/images/projects/architecture-website.png",
-    link: "#"
+    imgSrc: peoplePict2,
+    link: "#Contact"
   },
   {
     title: "Aplikasi Web",
     description:
       "Manajer Keuangan Pribadi: alat web untuk mencatat pengeluaran.",
-    imgSrc: "/images/projects/finance-app.png",
-    link: "#"
+    imgSrc: hero,
+    link: "#Contact"
   }
 ]
 

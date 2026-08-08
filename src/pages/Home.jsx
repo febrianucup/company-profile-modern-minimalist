@@ -1,9 +1,7 @@
-import { Link } from "react-router-dom"
 import peoplePict from "../assets/peoplePict.png"
-import peoplePict2 from "../assets/peoplePict2.png"
 
 function Home() {
-    const companyName = "B0MBER SOFTGEN"  
+    const companyName = "B0MBER SOFTGEN"
     return (
         <header className="w-full bg-white">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 lg:py-24 text-center">
@@ -19,12 +17,12 @@ function Home() {
                 Bomber Software House adalah mitra pengembangan perangkat lunak yang berfokus pada efisiensi, performa, dan desain modern. Kami membantu bisnis dan startup mentransformasi ide menjadi aplikasi web serta sistem enterprise yang andal, aman, dan siap tumbuh bersamamu.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center mt-6 sm:mt-8 gap-3 sm:gap-4 w-full sm:w-auto px-4">
-                <Link to="/#about" className="w-full sm:w-auto text-center px-6 py-3.5 sm:py-4 bg-[#259141] text-white font-semibold rounded-md shadow hover:bg-[#1F7338] transition" data-aos="slide-right" data-aos-delay="200">
+                <a href="#AboutUs" className="w-full sm:w-auto text-center px-6 py-3.5 sm:py-4 bg-[#259141] text-white font-semibold rounded-md shadow hover:bg-[#1F7338] transition" data-aos="slide-right" data-aos-delay="200">
                     Learn What Bomber Does
-                </Link>
-                <Link to="/" className="w-full sm:w-auto text-center px-6 py-3.5 sm:py-4 bg-white text-[#2DB34F] border-2 border-[#2DB34F] font-semibold rounded-md shadow hover:bg-[#2DB34F]/10 hover:text-[#1F7338] transition" data-aos="slide-left" data-aos-delay="200">
+                </a>
+                <a href="#Service" className="w-full sm:w-auto text-center px-6 py-3.5 sm:py-4 bg-white text-[#2DB34F] border-2 border-[#2DB34F] font-semibold rounded-md shadow hover:bg-[#2DB34F]/10 hover:text-[#1F7338] transition" data-aos="slide-left" data-aos-delay="200">
                     Explore our products
-                </Link>
+                </a>
                 </div>
             </div>
             </div>

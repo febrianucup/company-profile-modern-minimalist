@@ -2,7 +2,6 @@ import Card from "../components/Card"
 import PhotoCard from "../components/PhotoCard"
 import pict from "../assets/peoplePict.png"
 import pict2 from "../assets/peoplePict2.png"
-import { Link } from "react-router-dom"
 
 function About() {
   const cardDesc = [

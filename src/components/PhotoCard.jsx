@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 
 export const TeamCard = ({ 
@@ -6,7 +5,7 @@ export const TeamCard = ({
   name, 
   role 
 }) => {
-  const [imageError, serImageError] = useState(false)
+  const [imageError, setImageError] = useState(false)
   return (
     <div className="group flex w-64 shrink-0 flex-col">
       <div className="relative h-96 w-full overflow-hidden rounded-2xl bg-neutral-100 dark:bg-neutral-800">
@@ -31,6 +30,7 @@ export const TeamCard = ({
           <img
             src={img}
             alt={name}
+            onError={() => setImageError(true)}
             className="h-full w-full object-cover grayscale transition-all duration-300 group-hover:grayscale-0"
           />
         )}

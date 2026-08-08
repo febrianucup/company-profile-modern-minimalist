@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Mail, 
@@ -18,15 +18,15 @@ const contactMethods = [
     title: "Email Us",
     description: "Hubungi kami via email",
     value: "bombersoftgen@gmail.com",
-    link: "mailto:dhileepkumargm@gmail.com",
+    link: "mailto:muhammaddwifebrian@gmail.com",
     gradient: "from-blue-500/20 to-cyan-500/20",
   },
   {
     icon: Phone,
     title: "Call Us",
     description: "Berbicara langsung dengan tim kami",
-    value: "083134767575",
-    link: "tel:+62134767575",
+    value: "+62 813-4767-575",
+    link: "https://wa.me/6283134767575",
     gradient: "from-green-500/20 to-emerald-500/20",
   },
   {
@@ -34,7 +34,7 @@ const contactMethods = [
     title: "Visit Us",
     description: "Kantor kita",
     value: "Situbondo, Jawa Timur, Indonesia",
-    link: "#",
+    link: "",
     gradient: "from-purple-500/20 to-pink-500/20",
   }
 ];
