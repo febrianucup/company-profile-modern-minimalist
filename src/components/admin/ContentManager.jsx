@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowUp,
   ImageIcon,
+  Loader2,
   Pencil,
   Plus,
   Trash2,
+  Upload,
 } from "lucide-react";
 
 import { cn } from "../../lib/utils";
+import { formatBytes, estimateBytes, fileToOptimizedDataUrl, isDataUrl } from "../../lib/image";
 import { IMAGE_PRESETS, db, useStore } from "../../lib/store";
 import { Button } from "../ui/Button";
 import { Field, Input, Textarea } from "../ui/Field";
@@ -28,9 +31,34 @@ function itemToForm(item, fields) {
 }
 
 function ImageField({ value, onChange }) {
+  const toast = useToast();
+  const inputRef = useRef(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleFile = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = ""; // allow picking the same file again
+    if (!file) return;
+
+    setBusy(true);
+    setError("");
+    try {
+      const { dataUrl, width, height, bytes } = await fileToOptimizedDataUrl(file);
+      onChange(dataUrl);
+      toast(`Foto diproses: ${width}×${height} · ±${formatBytes(bytes)}`);
+    } catch (uploadError) {
+      setError(uploadError.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const storedBytes = isDataUrl(value) ? estimateBytes(value) : null;
+
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-3">
+      <div className="flex items-start gap-3">
         <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
           {value ? (
             <img src={value} alt="" className="h-full w-full object-cover" />
@@ -38,12 +66,59 @@ function ImageField({ value, onChange }) {
             <ImageIcon className="h-5 w-5 text-slate-300" />
           )}
         </div>
-        <Input
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          placeholder="https://... atau pilih preset di bawah"
-        />
+
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="flex flex-wrap gap-2">
+            <input
+              ref={inputRef}
+              id="image-file-input"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFile}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={busy}
+              onClick={() => inputRef.current?.click()}
+            >
+              {busy ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Upload className="h-4 w-4" />
+              )}
+              {busy ? "Memproses..." : "Pilih dari perangkat"}
+            </Button>
+            {value && (
+              <Button type="button" variant="ghost" size="sm" onClick={() => onChange("")}>
+                <Trash2 className="h-4 w-4" />
+                Hapus foto
+              </Button>
+            )}
+          </div>
+
+          <Input
+            value={isDataUrl(value) ? "" : (value ?? "")}
+            onChange={(event) => onChange(event.target.value)}
+            placeholder="atau tempel URL gambar di sini"
+          />
+        </div>
       </div>
+
+      {storedBytes !== null && (
+        <p className="text-xs text-slate-500">
+          Foto dari perangkat tersimpan di browser (±{formatBytes(storedBytes)}), otomatis
+          dikecilkan ke maksimal 720 px.
+        </p>
+      )}
+      {error && (
+        <p role="alert" className="text-xs font-medium text-red-600">
+          {error}
+        </p>
+      )}
+
       <div className="flex flex-wrap gap-2">
         {IMAGE_PRESETS.map((preset) => (
           <button

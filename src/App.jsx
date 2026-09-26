@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-route
 
 import MainLayout from "./Layouts/MainLayout";
 import RequireAuth from "./components/RequireAuth";
+import { StorageErrorReporter } from "./components/StorageErrorReporter";
 import { ToastProvider } from "./components/ui/Toast";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
@@ -36,6 +37,7 @@ function ScrollManager() {
 function App() {
   return (
     <ToastProvider>
+      <StorageErrorReporter />
       <BrowserRouter>
         <ScrollManager />
         <Routes>

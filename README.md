@@ -68,5 +68,7 @@ sumber data yang sama (`store.js`).
 ## Catatan
 
 - Data demo bisa direset dari **Pengaturan → Reset data demo**.
-- Gambar proyek/tim diambil dari preset bawaan atau URL eksternal (belum ada upload file).
+- Foto proyek/tim bisa dipilih dari perangkat (tombol "Pilih dari perangkat"), memakai preset
+  bawaan, atau tempel URL. Foto dari perangkat otomatis dikecilkan ke maksimal 720 px (JPEG)
+  sebelum disimpan di localStorage, jadi sebaiknya dipakai untuk beberapa foto saja.
 - Form kontak tidak mengirim email; pesan tersimpan di inbox dashboard.

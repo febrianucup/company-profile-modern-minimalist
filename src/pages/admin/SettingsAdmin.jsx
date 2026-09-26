@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { RotateCcw, Save } from "lucide-react";
 
 import { Button } from "../../components/ui/Button";
@@ -7,6 +7,7 @@ import { ConfirmDialog } from "../../components/ui/Modal";
 import { PageHeader } from "../../components/ui/Section";
 import { useToast } from "../../components/ui/toastContext";
 import { updateAccount, useAuth } from "../../lib/auth";
+import { formatBytes } from "../../lib/image";
 import { db, useStore } from "../../lib/store";
 
 const SITE_FIELDS = [
@@ -23,9 +24,12 @@ const SITE_FIELDS = [
 ];
 
 export function SettingsAdmin() {
-  const { settings } = useStore();
+  const store = useStore();
+  const { settings } = store;
   const session = useAuth();
   const toast = useToast();
+
+  const storageUsed = useMemo(() => new Blob([JSON.stringify(store)]).size, [store]);
 
   const [siteForm, setSiteForm] = useState(settings);
   const [accountForm, setAccountForm] = useState({
@@ -215,7 +219,8 @@ export function SettingsAdmin() {
           </h2>
           <p className="mt-1 max-w-2xl text-sm text-red-700/80">
             Semua data demo (proyek, layanan, tim, pesan, pengaturan) tersimpan di
-            localStorage browser ini. Reset akan mengembalikannya ke kondisi awal.
+            localStorage browser ini — saat ini ±{formatBytes(storageUsed)} terpakai. Reset akan
+            mengembalikannya ke kondisi awal.
           </p>
           <Button variant="danger" className="mt-5" onClick={() => setResetOpen(true)}>
             <RotateCcw className="h-4 w-4" />

@@ -155,8 +155,14 @@ const listeners = new Set();
 function persist() {
   try {
     localStorage.setItem(DB_KEY, JSON.stringify(state));
-  } catch {
-    // Storage full / disabled: keep working in memory.
+    return true;
+  } catch (error) {
+    // Quota exceeded (usually after uploading several photos) or storage
+    // disabled: keep working in memory and let the UI warn the user.
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("bomber:storage-error", { detail: { error } }));
+    }
+    return false;
   }
 }
 
