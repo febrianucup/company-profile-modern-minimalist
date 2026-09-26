@@ -1,121 +1,143 @@
-import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import Logo from '../assets/logo.png';
-import LoginBtn from './LoginBtn';
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
-const Navbar = () => {
-    const [activeSection, setActiveSection] = useState('Home');
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+import Logo from "../assets/logo.png";
+import { useStore } from "../lib/store";
+import { AuthButton } from "./AuthButton";
+import { cn } from "../lib/utils";
 
-    useEffect(() => {
-        const handleScroll = () => {
-            const sections = ['Home', 'AboutUs', 'Service', 'Contact'];
-            const scrollPosition = window.scrollY + 200;
+const NAV_ITEMS = [
+  { id: "Home", label: "Home" },
+  { id: "AboutUs", label: "About Us" },
+  { id: "Service", label: "Services" },
+  { id: "Contact", label: "Contact" },
+];
 
-            for (const sectionId of sections) {
-                const element = document.getElementById(sectionId);
-                if (element) {
-                    const top = element.offsetTop;
-                    const height = element.offsetHeight;
-                    
-                    if (scrollPosition >= top && scrollPosition < top + height) {
-                        setActiveSection(sectionId);
-                        break;
-                    }
-                }
-            }
-        };
+export function Navbar() {
+  const { settings } = useStore();
+  const { pathname } = useLocation();
+  const [activeSection, setActiveSection] = useState("Home");
+  const [menuOpen, setMenuOpen] = useState(false);
 
-        window.addEventListener('scroll', handleScroll);
-        handleScroll();
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+  const onHomePage = pathname === "/";
+  const linkFor = (id) => (onHomePage ? `#${id}` : `/#${id}`);
 
-    useEffect(() => {
-        if (isMobileMenuOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-    }, [isMobileMenuOpen]);
+  // Scroll spy: highlight the section currently under the navbar.
+  useEffect(() => {
+    if (!onHomePage) return undefined;
 
-    const navItems = [
-        { id: 'Home', Label: 'Home' },
-        { id: 'AboutUs', Label: 'About Us' },
-        { id: 'Service', Label: 'Services' },
-        { id: 'Contact', Label: 'Contact' }
-    ];
-
-    const toggleMobileMenu = () => {
-        setIsMobileMenuOpen(!isMobileMenuOpen);
+    const handleScroll = () => {
+      const probe = window.scrollY + 160;
+      let current = NAV_ITEMS[0].id;
+      for (const item of NAV_ITEMS) {
+        const element = document.getElementById(item.id);
+        if (element && probe >= element.offsetTop) current = item.id;
+      }
+      setActiveSection(current);
     };
 
-    return (
-        <header className="fixed left-0 right-0 top-0 z-50 w-full bg-white/80 backdrop-blur-md transition-all duration-300 border-b border-gray-100">
-            <div className="container mx-auto px-4 lg:px-8">
-                <div className="flex items-center justify-between h-20 w-full">
-                    <div className="flex items-center gap-8">
-                        <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
-                            <img src={Logo} alt="Logo" className="h-12 md:h-16 w-auto object-contain" />
-                        </Link>
-                        <nav className="hidden lg:flex items-center gap-8 text-sm uppercase tracking-widest">
-                            {navItems.map((item) => {
-                                const isActive = activeSection === item.id;
-                                return (
-                                    <a key={item.id} href={`#${item.id}`} className={`relative py-2 text-sm font-medium transition-colors duration-300 group ${isActive ? "text-[#259141] font-semibold" : "text-gray-700 hover:text-[#259141]"}`}>
-                                        <span className="inline-block transition-transform duration-300 group-hover:-translate-y-0.5">
-                                            {item.Label}
-                                        </span>
-                                        <span className={`absolute bottom-0 left-0 h-[2px] bg-[#259141] rounded-full transition-all duration-300 ${isActive ? "w-full" : "w-0 group-hover:w-full" }`}/>
-                                    </a>
-                                );
-                            })}
-                        </nav>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="hidden lg:block">
-                            <LoginBtn />
-                        </div>
-                        <button onClick={toggleMobileMenu} className="lg:hidden p-2 text-gray-700 hover:text-[#259141] focus:outline-none" aria-label="Toggle Navigation">
-                            <svg className="w-7 h-7 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                {isMobileMenuOpen ? (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                ) : (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"/>
-                                )}
-                            </svg>
-                        </button>
-                    </div>
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [onHomePage]);
 
-                </div>
-            </div>
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
 
-            {/* Mobile Navigation Drawer / Menu Dropdown */}
-            <div 
-                className={`lg:hidden absolute top-full inset-x-0  bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-xl transition-all duration-300 ease-in-out overflow-hidden ${
-                    isMobileMenuOpen ? "max-h-[400px] opacity-100 py-6" : "max-h-0 opacity-0 py-0"
-                }`}
-            >
-                <div className="container mx-auto px-6 flex flex-col gap-5">
-                    {navItems.map((item) => {
-                        const isActive = activeSection === item.id;
-                        return (
-                            <a key={item.id} href={`#${item.id}`} onClick={() => setIsMobileMenuOpen(false)} className={`text-base font-semibold tracking-wider transition-colors duration-200 ${
-                                    isActive ? "text-[#259141] pl-2 border-l-4 border-[#259141]" : "text-gray-700 hover:text-[#259141]"}`} >
-                                {item.Label}
-                            </a>
-                        );
-                    })}
+  return (
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-200/80 bg-white/85 backdrop-blur">
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-6 px-5 sm:px-8">
+        <Link
+          to="/"
+          onClick={() => setMenuOpen(false)}
+          className="flex items-center gap-2.5"
+        >
+          <img src={Logo} alt={`Logo ${settings.companyName}`} className="h-10 w-auto object-contain" />
+          <span className="hidden font-heading text-base font-semibold tracking-tight text-slate-900 sm:block">
+            {settings.companyName}
+          </span>
+        </Link>
 
-                    <div className="pt-4 border-t border-gray-100 flex justify-start">
-                        <div onClick={() => setIsMobileMenuOpen(false)} className="w-full">
-                            <LoginBtn />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
-    );
-};
+        <nav className="hidden items-center gap-7 lg:flex">
+          {NAV_ITEMS.map((item) => {
+            const isActive = onHomePage && activeSection === item.id;
+            return (
+              <Link
+                key={item.id}
+                to={linkFor(item.id)}
+                className={cn(
+                  "relative py-1.5 text-sm font-medium transition-colors",
+                  isActive ? "text-brand-700" : "text-slate-600 hover:text-slate-900",
+                )}
+              >
+                {item.label}
+                <span
+                  className={cn(
+                    "absolute inset-x-0 -bottom-0.5 h-0.5 rounded-full bg-brand-500 transition-transform duration-300",
+                    isActive ? "scale-x-100" : "scale-x-0",
+                  )}
+                />
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <div className="hidden lg:block">
+            <AuthButton />
+          </div>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
+            aria-expanded={menuOpen}
+            className="rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 lg:hidden"
+          >
+            {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden border-b border-slate-200 bg-white lg:hidden"
+          >
+            <nav className="mx-auto flex w-full max-w-7xl flex-col gap-1 px-5 py-5 sm:px-8">
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.id}
+                  to={linkFor(item.id)}
+                  onClick={() => setMenuOpen(false)}
+                  className={cn(
+                    "rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                    onHomePage && activeSection === item.id
+                      ? "bg-brand-50 text-brand-700"
+                      : "text-slate-700 hover:bg-slate-100",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <div className="mt-3 border-t border-slate-200 pt-4">
+                <AuthButton className="w-full" size="md" onNavigate={() => setMenuOpen(false)} />
+              </div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  );
+}
 
 export default Navbar;

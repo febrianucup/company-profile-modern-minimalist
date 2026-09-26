@@ -1,14 +1,21 @@
-import { ContactCard } from "../components/ContactCard"
+import { ContactCard } from "../components/ContactCard";
+import { Container, SectionHeading } from "../components/ui/Section";
 
 function Contact() {
   return (
-    <section className="container mx-auto px-4 lg:px-12 relative w-full border-t border-gray-200/80 py-20 bg-white">
-      <div className="text-center" data-aos="fade-out">
-        <h1 className="font-mono text-[40px] font-semibold">Contact Us</h1>
-      </div>
-      <ContactCard/>
+    <section id="Contact" className="border-t border-slate-200 py-20 sm:py-24">
+      <Container>
+        <SectionHeading
+          eyebrow="Kontak"
+          title="Contact Us"
+          description="Punya project atau pertanyaan? Kirim pesan lewat form, atau hubungi kami lewat kanal di samping."
+        />
+        <div className="mt-12">
+          <ContactCard />
+        </div>
+      </Container>
     </section>
-  )
+  );
 }
 
-export default Contact
+export default Contact;

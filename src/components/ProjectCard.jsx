@@ -1,63 +1,55 @@
-import * as React from "react";
-import { ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, ImageIcon } from "lucide-react";
+
 import { cn } from "../lib/utils";
 
-const ProjectCard = React.forwardRef(
-  (
-    {
-      className,
-      imgSrc,
-      title,
-      description,
-      link,
-      linkText = "View Project",
-      ...props
-    },
-    ref
-  ) => {
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          "group relative flex cursor-pointer flex-col overflow-hidden rounded-2xl border bg-white text-slate-900 shadow-sm transition-all duration-500 ease-in-out hover:-translate-y-2 hover:shadow-xl",
-          className
-        )}
-        {...props}
-      >
-        {/* Card Image Section */}
-        <div className="aspect-video overflow-hidden">
+export function ProjectCard({ title, description, image, link, linkText = "Lihat proyek", className }) {
+  const [failed, setFailed] = useState(false);
+  const external = link && !link.startsWith("#") && !link.startsWith("/");
+
+  return (
+    <article
+      className={cn(
+        "group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-soft",
+        className,
+      )}
+    >
+      <div className="aspect-video overflow-hidden bg-slate-100">
+        {failed || !image ? (
+          <div className="flex h-full w-full items-center justify-center text-slate-300">
+            <ImageIcon className="h-8 w-8" />
+          </div>
+        ) : (
           <img
-            src={imgSrc}
+            src={image}
             alt={title}
-            className="h-full w-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
             loading="lazy"
+            onError={() => setFailed(true)}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
-        </div>
+        )}
+      </div>
 
-        {/* Card Content Section */}
-        <div className="flex flex-1 flex-col p-6">
-          <h3 className="text-xl font-semibold transition-colors duration-300 group-hover:text-primary">
-            {title}
-          </h3>
-          <p className="mt-3 flex-1 text-slate-600">{description}</p>
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="font-heading text-lg font-semibold tracking-tight text-slate-900">
+          {title}
+        </h3>
+        <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">{description}</p>
 
-          {/* Card Link/CTA */}
+        {link && (
           <a
             href={link}
-            target={link.startsWith('#') ? undefined : '_blank'}
-            rel={link.startsWith('#') ? undefined : 'noopener noreferrer'}
-            className="group/button mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#2DB34F] transition-all duration-300 hover:underline"
-            onClick={(e) => e.stopPropagation()}
+            target={external ? "_blank" : undefined}
+            rel={external ? "noopener noreferrer" : undefined}
+            className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 transition-colors hover:text-brand-800"
           >
             {linkText}
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/button:translate-x-1 text-[#2DB34F]" />
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
           </a>
-        </div>
+        )}
       </div>
-    );
-  }
-);
+    </article>
+  );
+}
 
-ProjectCard.displayName = "ProjectCard";
-
-export { ProjectCard };
+export default ProjectCard;

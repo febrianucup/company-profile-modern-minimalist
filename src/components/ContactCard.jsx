@@ -1,261 +1,210 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Send, 
-  User, 
-  MessageSquare, 
-  Building, 
-  ArrowRight,
-  CheckCircle
-} from 'lucide-react';
+import { useState } from "react";
+import { ArrowUpRight, CheckCircle2, Loader2, Mail, MapPin, Phone, Send } from "lucide-react";
 
-const contactMethods = [
-  {
-    icon: Mail,
-    title: "Email Us",
-    description: "Hubungi kami via email",
-    value: "bombersoftgen@gmail.com",
-    link: "mailto:muhammaddwifebrian@gmail.com",
-    gradient: "from-blue-500/20 to-cyan-500/20",
-  },
-  {
-    icon: Phone,
-    title: "Call Us",
-    description: "Berbicara langsung dengan tim kami",
-    value: "+62 813-4767-575",
-    link: "https://wa.me/6283134767575",
-    gradient: "from-green-500/20 to-emerald-500/20",
-  },
-  {
-    icon: MapPin,
-    title: "Visit Us",
-    description: "Kantor kita",
-    value: "Situbondo, Jawa Timur, Indonesia",
-    link: "",
-    gradient: "from-purple-500/20 to-pink-500/20",
+import { db, useStore } from "../lib/store";
+import { Button } from "./ui/Button";
+import { Field, Input, Textarea } from "./ui/Field";
+
+const EMPTY_FORM = { name: "", email: "", company: "", message: "" };
+
+function validate(form) {
+  const errors = {};
+  if (!form.name.trim()) errors.name = "Nama wajib diisi.";
+  if (!form.email.trim()) {
+    errors.email = "Email wajib diisi.";
+  } else if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
+    errors.email = "Format email tidak valid.";
   }
-];
+  if (!form.message.trim()) {
+    errors.message = "Pesan wajib diisi.";
+  } else if (form.message.trim().length < 10) {
+    errors.message = "Pesan minimal 10 karakter.";
+  }
+  return errors;
+}
 
 export function ContactCard() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    company: '',
-    message: ''
-  });
+  const { settings } = useStore();
+  const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
+  const methods = [
+    {
+      icon: Mail,
+      title: "Email",
+      description: "Hubungi kami lewat email",
+      value: settings.email,
+      href: `mailto:${settings.email}`,
+    },
+    {
+      icon: Phone,
+      title: "Telepon / WhatsApp",
+      description: "Bicara langsung dengan tim kami",
+      value: settings.phone,
+      href: settings.whatsapp,
+    },
+    {
+      icon: MapPin,
+      title: "Lokasi",
+      description: "Kunjungi kantor kami",
+      value: settings.address,
+      href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address)}`,
+    },
+  ];
+
+  const update = (field, value) => {
+    setForm((current) => ({ ...current, [field]: value }));
+    if (errors[field]) setErrors((current) => ({ ...current, [field]: undefined }));
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
-    }
-    if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
-    } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Message must be at least 10 characters';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const nextErrors = validate(form);
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-    
-    setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+    setSending(true);
+    db.addMessage({
+      name: form.name.trim(),
+      email: form.email.trim(),
+      company: form.company.trim(),
+      message: form.message.trim(),
+    });
+    // Small pause so the button state is visible; the data is already saved.
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    setSending(false);
+    setSent(true);
+    setForm(EMPTY_FORM);
   };
 
   return (
-    <section className="relative py-16 bg-white text-black">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          
-          {/* Left Column: Form Section */}
-          <div className="space-y-8" data-aos="fade-out">
-            <div>
-              <h3 className="text-3xl font-bold text-black mb-3">Send us a message</h3>
-              <p className="text-black text-base">
-                Konsultasikan project kamu, dan kami akan membalasnya dalam 24 jam
-              </p>
+    <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h3 className="font-heading text-2xl font-semibold tracking-tight text-slate-900">
+          Kirim pesan
+        </h3>
+        <p className="mt-2 text-sm text-slate-600">
+          Konsultasikan project kamu, kami balas dalam 24 jam.
+        </p>
+
+        {sent ? (
+          <div className="mt-8 rounded-2xl border border-brand-100 bg-brand-50 p-8 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-card">
+              <CheckCircle2 className="h-7 w-7 text-brand-600" />
+            </div>
+            <h4 className="mt-4 font-heading text-lg font-semibold text-slate-900">
+              Pesan terkirim!
+            </h4>
+            <p className="mx-auto mt-2 max-w-xs text-sm text-slate-600">
+              Terima kasih sudah menghubungi kami. Pesanmu tercatat di inbox admin dan akan
+              dibalas dalam 24 jam.
+            </p>
+            <Button variant="outline" size="sm" className="mt-6" onClick={() => setSent(false)}>
+              Kirim pesan lain
+            </Button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field label="Nama" htmlFor="contact-name" error={errors.name} required>
+                <Input
+                  id="contact-name"
+                  value={form.name}
+                  invalid={Boolean(errors.name)}
+                  placeholder="Nama kamu"
+                  onChange={(event) => update("name", event.target.value)}
+                />
+              </Field>
+              <Field label="Email" htmlFor="contact-email" error={errors.email} required>
+                <Input
+                  id="contact-email"
+                  type="email"
+                  value={form.email}
+                  invalid={Boolean(errors.email)}
+                  placeholder="nama@email.com"
+                  onChange={(event) => update("email", event.target.value)}
+                />
+              </Field>
             </div>
 
-            <AnimatePresence mode="wait">
-              {!isSubmitted ? (
-                <motion.form
-                  key="form"
-                  onSubmit={handleSubmit}
-                  className="space-y-5"
-                  initial={{ opacity: 1 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-black" />
-                      <input
-                        type="text"
-                        placeholder="Your Name"
-                        value={formData.name}
-                        onChange={(e) => handleInputChange('name', e.target.value)}
-                        className={`w-full pl-10 pr-4 py-3.5 bg-black/[0.08] border rounded-xl text-black placeholder-black/40 focus:outline-none focus:border-indigo-400 transition-all text-sm ${
-                          errors.name ? 'border-red-400' : 'border-black/[0.15]'
-                        }`}
-                      />
-                      {errors.name && (
-                        <p className="text-red-400 text-xs mt-1.5">{errors.name}</p>
-                      )}
-                    </div>
+            <Field label="Perusahaan" htmlFor="contact-company" hint="Opsional">
+              <Input
+                id="contact-company"
+                value={form.company}
+                placeholder="Nama perusahaan"
+                onChange={(event) => update("company", event.target.value)}
+              />
+            </Field>
 
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-black/40" />
-                      <input
-                        type="email"
-                        placeholder="Email Address"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        className={`w-full pl-10 pr-4 py-3.5 bg-black/[0.08] border rounded-xl text-black placeholder-black/40 focus:outline-none focus:border-indigo-400 transition-all text-sm ${
-                          errors.email ? 'border-red-400' : 'border-black/[0.15]'
-                        }`}
-                      />
-                      {errors.email && (
-                        <p className="text-red-400 text-xs mt-1.5">{errors.email}</p>
-                      )}
-                    </div>
-                  </div>
+            <Field label="Pesan" htmlFor="contact-message" error={errors.message} required>
+              <Textarea
+                id="contact-message"
+                rows={5}
+                value={form.message}
+                invalid={Boolean(errors.message)}
+                placeholder="Ceritakan kebutuhan project kamu..."
+                onChange={(event) => update("message", event.target.value)}
+              />
+            </Field>
 
-                  <div className="relative">
-                    <Building className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-black/40" />
-                    <input
-                      type="text"
-                      placeholder="Company (Optional)"
-                      value={formData.company}
-                      onChange={(e) => handleInputChange('company', e.target.value)}
-                      className="w-full pl-10 pr-4 py-3.5 bg-black/[0.08] border border-black/[0.15] rounded-xl text-black placeholder-black/40 focus:outline-none focus:border-indigo-400 transition-all text-sm"
-                    />
-                  </div>
-
-                  <div className="relative">
-                    <MessageSquare className="absolute left-3 top-4 h-5 w-5 text-black/40" />
-                    <textarea
-                      placeholder="Tell us about your project..."
-                      rows={5}
-                      value={formData.message}
-                      onChange={(e) => handleInputChange('message', e.target.value)}
-                      className={`w-full pl-10 pr-4 py-3.5 bg-black/[0.08] border rounded-xl text-black placeholder-black/40 focus:outline-none focus:border-indigo-400 transition-all resize-none text-sm ${
-                        errors.message ? 'border-red-400' : 'border-black/[0.15]'
-                      }`}
-                    />
-                    {errors.message && (
-                      <p className="text-red-400 text-xs mt-1.5">{errors.message}</p>
-                    )}
-                  </div>
-
-                  <motion.button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full relative group bg-[#259141] hover:bg-[#1F7338] text-white font-medium py-3.5 px-6 rounded-xl transition-all disabled:opacity-50 text-sm"
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                  >
-                    <span className="relative flex items-center justify-center gap-2">
-                      {isSubmitting ? (
-                        <motion.div
-                          className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full"
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        />
-                      ) : (
-                        <>
-                          <Send className="h-4 w-4" />
-                          Send Message
-                          <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                        </>
-                      )}
-                    </span>
-                  </motion.button>
-                </motion.form>
+            <Button type="submit" disabled={sending} className="w-full">
+              {sending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Mengirim...
+                </>
               ) : (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-center py-10 bg-black/[0.03] border border-black/10 rounded-2xl"
-                >
-                  <div className="w-16 h-16 rounded-full bg-green-500/20 border border-green-400/30 flex items-center justify-center mx-auto mb-4">
-                    <CheckCircle className="w-8 h-8 text-green-400" />
-                  </div>
-                  <h3 className="text-xl font-bold text-black mb-2">Message Sent!</h3>
-                  <p className="text-gray-300 text-sm mb-6 max-w-xs mx-auto">
-                    Thank you for reaching out. We'll get back to you within 24 hours.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setIsSubmitted(false);
-                      setFormData({ name: '', email: '', company: '', message: '' });
-                    }}
-                    className="px-5 py-2.5 bg-black/[0.08] border border-black/[0.15] rounded-xl text-black hover:bg-black/[0.12] transition-all text-xs font-medium"
-                  >
-                    Send Another Message
-                  </button>
-                </motion.div>
+                <>
+                  <Send className="h-4 w-4" />
+                  Kirim pesan
+                </>
               )}
-            </AnimatePresence>
-          </div>
-
-          {/* Right Column: Contact Methods & Guarantee */}
-          <div className="space-y-8">
-            <div data-aos="fade-out">
-              <h3 className="text-3xl font-bold text-black mb-3">Other ways to reach us</h3>
-              <p className="text-gray-800 text-base">
-                Pilh salah satu cara untuk menghubungi kami
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {contactMethods.map((method, index) => (
-                <a
-                  key={index}
-                  href={method.link}
-                  className="block p-5 bg-[#2db34e5a] backdrop-blur-md rounded-2xl border border-black/[0.1] hover:bg-[#25914150] transition-all group"
-                  data-aos="fade-out" data-aos-delay={index * 200}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${method.gradient} border border-black/10 flex items-center justify-center shrink-0`}>
-                      <method.icon className="w-6 h-6 text-black" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-base font-semibold text-gray-700 mb-0.5">{method.title}</h4>
-                      <p className="text-black/60 text-xs mb-1 truncate">{method.description}</p>
-                      <p className="text-black text-sm font-medium truncate">{method.value}</p>
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-black/30 group-hover:text-black group-hover:translate-x-1 transition-all shrink-0" />
-                  </div>
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
+            </Button>
+          </form>
+        )}
       </div>
-    </section>
+
+      <div>
+        <h3 className="font-heading text-2xl font-semibold tracking-tight text-slate-900">
+          Cara lain menghubungi kami
+        </h3>
+        <p className="mt-2 text-sm text-slate-600">
+          Pilih salah satu kanal di bawah ini.
+        </p>
+
+        <ul className="mt-8 space-y-4">
+          {methods.map((method) => (
+            <li key={method.title}>
+              <a
+                href={method.href}
+                target={method.href.startsWith("http") ? "_blank" : undefined}
+                rel={method.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-card transition-all hover:border-brand-200 hover:shadow-soft"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                  <method.icon className="h-5 w-5" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-semibold text-slate-900">
+                    {method.title}
+                  </span>
+                  <span className="block truncate text-xs text-slate-500">
+                    {method.description}
+                  </span>
+                  <span className="mt-0.5 block truncate text-sm text-slate-700">
+                    {method.value}
+                  </span>
+                </span>
+                <ArrowUpRight className="h-4 w-4 shrink-0 text-slate-300 transition-colors group-hover:text-brand-600" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
+
+export default ContactCard;

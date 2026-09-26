@@ -1,121 +1,110 @@
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
-import Logo from "../assets/logo.png"
 
-const defaultSections = [
+import Logo from "../assets/logo.png";
+import { useStore } from "../lib/store";
+
+const LINK_GROUPS = [
   {
-    title: "Product",
+    title: "Produk",
     links: [
-      { name: "Overview", href: "#Service" },
-      { name: "Pricing", href: "#Contact" },
-      { name: "Portfolio", href: "#Service" },
-      { name: "Features", href: "#Service" },
+      { name: "Layanan", href: "#Service" },
+      { name: "Portofolio", href: "#Service" },
+      { name: "Konsultasi", href: "#Contact" },
     ],
   },
   {
-    title: "Company",
+    title: "Perusahaan",
     links: [
-      { name: "About", href: "#AboutUs" },
-      { name: "Team", href: "#AboutUs" },
-      { name: "Blog", href: "#" },
-      { name: "Careers", href: "#Contact" },
+      { name: "Tentang kami", href: "#AboutUs" },
+      { name: "Tim", href: "#AboutUs" },
+      { name: "Karier", href: "#Contact" },
     ],
   },
   {
-    title: "Resources",
+    title: "Bantuan",
     links: [
-      { name: "Support", href: "#Contact" },
-      { name: "FAQs", href: "#Contact" },
-      { name: "Contact", href: "#Contact" },
-      { name: "Privacy", href: "#" },
+      { name: "Kontak", href: "#Contact" },
+      { name: "Dukungan", href: "#Contact" },
+      { name: "FAQ", href: "#Contact" },
     ],
   },
 ];
 
-const defaultSocialLinks = [
-  { icon: <FaInstagram className="h-5 w-5" />, href: "#", label: "Instagram" },
-  { icon: <FaFacebook className="h-5 w-5" />, href: "#", label: "Facebook" },
-  { icon: <FaTwitter className="h-5 w-5" />, href: "#", label: "Twitter" },
-  { icon: <FaLinkedin className="h-5 w-5" />, href: "#", label: "LinkedIn" },
-];
+const SOCIAL_ICONS = {
+  Instagram: FaInstagram,
+  Facebook: FaFacebook,
+  Twitter: FaTwitter,
+  LinkedIn: FaLinkedin,
+};
 
-const defaultLegalLinks = [
-  { name: "Terms and Conditions", href: "#" },
-  { name: "Privacy Policy", href: "#" },
-];
+export function Footer() {
+  const { settings } = useStore();
+  const year = new Date().getFullYear();
 
-export const Footer = ({
-  logo = {
-    url: "https://www.B0mberSoftgen.com",
-    src: Logo,
-    alt: "logo",
-    title: "B0MBER Softgen",
-  },
-  sections = defaultSections,
-  description = "Solusi pengembangan perangkat lunak untuk bisnis digital dan tim modern.",
-  socialLinks = defaultSocialLinks,
-  copyright = "© 2026 B0MBER Softgen. All rights reserved.",
-  legalLinks = defaultLegalLinks,
-}) => {
   return (
-    <footer className="py-16 md:py-24 bg-[#259141] text-white">
-      <div className="container mx-auto px-4">
-        <div className="flex w-full flex-col justify-between gap-10 lg:flex-row lg:items-start lg:text-left">
-          <div className="flex w-full flex-col justify-between gap-6 lg:items-start">
-            <div className="flex items-center gap-2 lg:justify-start">
-              <a href={logo.url}>
-                <img
-                  src={logo.src}
-                  alt={logo.alt}
-                  title={logo.title}
-                  className="h-8"
-                />
-              </a>
-              <h2 className="text-xl font-semibold">{logo.title}</h2>
-            </div>
-            <p className="max-w-[70%] text-sm text-slate-200">
-              {description}
+    <footer className="bg-brand-700 text-white">
+      <div className="mx-auto w-full max-w-7xl px-5 py-14 sm:px-8">
+        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-14">
+          <div>
+            <a href="/" className="flex items-center gap-2.5">
+              <img src={Logo} alt={`Logo ${settings.companyName}`} className="h-9 w-auto object-contain" />
+              <span className="font-heading text-base font-semibold tracking-tight">
+                {settings.companyName}
+              </span>
+            </a>
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/80">
+              {settings.description}
             </p>
-            <ul className="flex items-center space-x-6 text-slate-200">
-              {socialLinks.map((social, idx) => (
-                <li key={idx} className="font-medium hover:text-white transition-colors">
-                  <a href={social.href} aria-label={social.label}>
-                    {social.icon}
-                  </a>
-                </li>
-              ))}
+            <ul className="mt-6 flex items-center gap-3">
+              {settings.socials.map((social) => {
+                const Icon = SOCIAL_ICONS[social.label];
+                return (
+                  <li key={social.label}>
+                    <a
+                      href={social.href}
+                      aria-label={social.label}
+                      className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-white/90 transition-colors hover:bg-white/20 hover:text-white"
+                    >
+                      {Icon ? <Icon className="h-4 w-4" /> : social.label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
-          <div className="grid w-full gap-6 md:grid-cols-3 lg:gap-20">
-            {sections.map((section, sectionIdx) => (
-              <div key={sectionIdx}>
-                <h3 className="mb-4 font-bold">{section.title}</h3>
-                <ul className="space-y-3 text-sm text-slate-200">
-                  {section.links.map((link, linkIdx) => (
-                    <li
-                      key={linkIdx}
-                      className="font-medium hover:text-white transition-colors"
+          {LINK_GROUPS.map((group) => (
+            <div key={group.title}>
+              <h3 className="font-mono text-xs font-medium uppercase tracking-[0.2em] text-white/60">
+                {group.title}
+              </h3>
+              <ul className="mt-4 space-y-2.5">
+                {group.links.map((link) => (
+                  <li key={link.name}>
+                    <a
+                      href={link.href}
+                      className="text-sm text-white/85 transition-colors hover:text-white"
                     >
-                      <a href={link.href}>{link.name}</a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        <div className="mt-8 flex flex-col justify-between gap-4 border-t border-white/20 pt-8 text-xs font-medium text-slate-200 md:flex-row md:items-center md:text-left">
-          <p className="order-2 lg:order-1">{copyright}</p>
-          <ul className="order-1 flex flex-col gap-2 md:order-2 md:flex-row md:gap-6">
-            {legalLinks.map((link, idx) => (
-              <li key={idx} className="hover:text-white transition-colors">
-                <a href={link.href}>{link.name}</a>
-              </li>
-            ))}
-          </ul>
+        <div className="mt-12 flex flex-col gap-3 border-t border-white/15 pt-6 text-xs text-white/70 sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {year} {settings.companyName}. All rights reserved.
+          </p>
+          <p>
+            Dibuat dengan React + Vite · {settings.address}
+          </p>
         </div>
       </div>
     </footer>
   );
-};
+}
+
+export default Footer;
